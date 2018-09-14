@@ -33,14 +33,14 @@ class LineSearch(object):
             # Coarse search
             self.find_optimum(metric, cmp_func)
             step /= 2.0
-            grid = [-1,1]
+            grid = np.array([-1,1])
             grid = self.opt_thresh + (step * grid)
             self.grid_search(grid, metric)
 
             # Fine search
             self.find_optimum(metric, cmp_func)
             step /= 5.0
-            grid = [-4,-3,-2,-1,1,2,3,4]
+            grid = np.array([-4,-3,-2,-1,1,2,3,4])
             grid = self.opt_thresh + (step * grid)
             self.grid_search(grid, metric)
 
