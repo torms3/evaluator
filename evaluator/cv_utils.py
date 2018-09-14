@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import numpy as np
+
 import cloudvolume as cv
 from cloudvolume.lib import Vec, Bbox
 
