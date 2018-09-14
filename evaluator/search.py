@@ -62,7 +62,7 @@ class LineSearch(object):
             seg2 = self.seg2(threshold=t)
             # self.results[t] = sc.score(seg1, seg2)
             if metric == "voi":
-                merge, split = voi(seg1, seg2)
+                split, merge = voi(seg1, seg2)
                 print("VI split: {:.3f}".format(split))
                 print("VI merge: {:.3f}".format(merge))
                 print("VI   sum: {:.3f}".format(merge + split))
