@@ -63,10 +63,10 @@ class LineSearch(object):
             # self.results[t] = sc.score(seg1, seg2)
             if metric == "voi":
                 merge, split = voi(seg1, seg2)
-                results[t] = merge + split
+                self.results[t] = merge + split
             elif metric == "rand":
                 error, prec, rec = adapted_rand(seg1, seg2, all_stats=True)
-                results[t] = error
+                self.results[t] = error
             else:
                 assert False
             print("")
