@@ -4,13 +4,6 @@ import cloudvolume as cv
 from cloudvolume.lib import Vec, Bbox
 
 
-def make_info(num_channels, layer_type, dtype, shape, resolution,
-              offset=(0,0,0), chunk_size=(64,64,64)):
-    return cv.CloudVolume.create_new_info(
-        num_channels, layer_type, dtype, 'raw', resolution, offset, shape,
-        chunk_size=chunk_size)
-
-
 def cutout(opt, dtype='uint8'):
     print(opt.gs_input)
 
