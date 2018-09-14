@@ -10,11 +10,12 @@ from .metric.rand import adapted_rand
 
 
 class LineSearch(object):
-    def __init__(self, depth=1, start=0.1, stop=1.0, step=0.1):
+    def __init__(self, depth=1, start=0.1, stop=1.0, step=0.1, verbose=False):
         self.depth = depth
         self.start = start
         self.stop = stop
         self.step = step
+        self.verbose = verbose
 
     def __call__(self, seg1, seg2, metric, cmp_func=np.argmin):
         self.seg1 = seg1
@@ -70,8 +71,9 @@ class LineSearch(object):
             else:
                 assert False
             self.results[t] = {metric: (error, merge, split)}
-            print("{} merge: {:.3f}".format(metric, merge))
-            print("{} split: {:.3f}".format(metric, split))
+            if self.verbose:
+                print("{} merge: {:.3f}".format(metric, merge))
+                print("{} split: {:.3f}".format(metric, split))
             print("{} error: {:.3f}".format(metric, error))
             print("")
 
