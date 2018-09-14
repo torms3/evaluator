@@ -48,8 +48,7 @@ class LineSearch(object):
         self.find_optimum(metric, cmp_func)
 
     def find_optimum(self, metric, cmp_func):
-        # idx = cmp_func([v[metric] for v in self.results.values()])
-        idx = cmp_func(self.results.values())
+        idx = cmp_func([v[metric]["error"] for v in self.results.values()])
         self.opt_thresh = list(self.results.items())[idx][0]
         print("Optimal threshold = {}".format(self.opt_thresh))
 
@@ -63,18 +62,17 @@ class LineSearch(object):
             # self.results[t] = sc.score(seg1, seg2)
             if metric == "voi":
                 split, merge = voi(seg1, seg2)
-                print("VI split: {:.3f}".format(split))
-                print("VI merge: {:.3f}".format(merge))
-                print("VI error: {:.3f}".format(merge + split))
-                self.results[t] = merge + split
+                error = merge + split
             elif metric == "rand":
-                error, prec, rec = adapted_rand(seg1, seg2, all_stats=True)
-                print("Rand merge: {:.3f}".format(prec))
-                print("Rand split: {:.3f}".format(rec))
-                print("Rand error: {:.3f}".format(error))
-                self.results[t] = error
+                error, merge, split = adapted_rand(seg1, seg2, all_stats=True)
             else:
                 assert False
+            self.results[t][metric]["error"] = error
+            self.results[t][metric]["merge"] = merge
+            self.results[t][metric]["split"] = split
+            print("{} merge: {:.3f}".format(metric, merge))
+            print("{} split: {:.3f}".format(metric, split))
+            print("{} error: {:.3f}".format(metric, error))
             print("")
 
     def save(self, fpath):
