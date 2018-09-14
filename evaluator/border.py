@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import numpy as np
 import scipy
+import scipy.ndimage
 
 
 def create_border_mask(source, target, max_dist, background_label=0, axis=0):
