@@ -50,7 +50,7 @@ class LineSearch(object):
     def find_optimum(self, metric, cmp_func):
         # idx = cmp_func([v[metric] for v in self.results.values()])
         idx = cmp_func(self.results.values())
-        self.opt_thresh = list(results.items())[idx][0]
+        self.opt_thresh = list(self.results.items())[idx][0]
         print("Optimal threshold = {}".format(self.opt_thresh))
 
     def grid_search(self, grid, metric):
