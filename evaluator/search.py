@@ -46,11 +46,13 @@ class LineSearch(object):
 
         # Find optimal threshold.
         self.find_optimum(metric, cmp_func)
+        print("Optimal threshold = {}".format(self.opt_thresh))
+
+        return self.results, self.opt_thresh
 
     def find_optimum(self, metric, cmp_func):
         idx = cmp_func([v[metric][0] for v in self.results.values()])
         self.opt_thresh = list(self.results.items())[idx][0]
-        print("Optimal threshold = {}".format(self.opt_thresh))
 
     def grid_search(self, grid, metric):
         for t in grid:
