@@ -67,9 +67,7 @@ class LineSearch(object):
                 error, merge, split = adapted_rand(seg1, seg2, all_stats=True)
             else:
                 assert False
-            self.results[t][metric]["error"] = error
-            self.results[t][metric]["merge"] = merge
-            self.results[t][metric]["split"] = split
+            self.results[t] = dict(error=error, merge=merge, split=split)
             print("{} merge: {:.3f}".format(metric, merge))
             print("{} split: {:.3f}".format(metric, split))
             print("{} error: {:.3f}".format(metric, error))
