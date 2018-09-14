@@ -48,7 +48,7 @@ class LineSearch(object):
         self.find_optimum(metric, cmp_func)
 
     def find_optimum(self, metric, cmp_func):
-        idx = cmp_func([v[metric]["error"] for v in self.results.values()])
+        idx = cmp_func([v[metric][0] for v in self.results.values()])
         self.opt_thresh = list(self.results.items())[idx][0]
         print("Optimal threshold = {}".format(self.opt_thresh))
 
@@ -67,7 +67,7 @@ class LineSearch(object):
                 error, merge, split = adapted_rand(seg1, seg2, all_stats=True)
             else:
                 assert False
-            self.results[t] = dict(error=error, merge=merge, split=split)
+            self.results[t] = dict(metric=(error, merge, split))
             print("{} merge: {:.3f}".format(metric, merge))
             print("{} split: {:.3f}".format(metric, split))
             print("{} error: {:.3f}".format(metric, error))
