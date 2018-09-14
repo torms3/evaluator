@@ -48,7 +48,7 @@ class LineSearch(object):
         self.find_optimum(metric, cmp_func)
         print("Optimal threshold = {}".format(self.opt_thresh))
 
-        return self.results, self.opt_thresh
+        return OrderedDict(sorted(self.results.items())), self.opt_thresh
 
     def find_optimum(self, metric, cmp_func):
         idx = cmp_func([v[metric][0] for v in self.results.values()])
