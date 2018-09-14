@@ -65,12 +65,12 @@ class LineSearch(object):
                 split, merge = voi(seg1, seg2)
                 print("VI split: {:.3f}".format(split))
                 print("VI merge: {:.3f}".format(merge))
-                print("VI   sum: {:.3f}".format(merge + split))
+                print("VI error: {:.3f}".format(merge + split))
                 self.results[t] = merge + split
             elif metric == "rand":
                 error, prec, rec = adapted_rand(seg1, seg2, all_stats=True)
-                print("Rand  prec: {:.3f}".format(prec))
-                print("Rand   rec: {:.3f}".format(rec))
+                print("Rand merge: {:.3f}".format(prec))
+                print("Rand split: {:.3f}".format(rec))
                 print("Rand error: {:.3f}".format(error))
                 self.results[t] = error
             else:
