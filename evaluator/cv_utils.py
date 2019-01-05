@@ -4,6 +4,9 @@ import numpy as np
 
 import cloudvolume as cv
 from cloudvolume.lib import Vec, Bbox
+from taskqueue import LocalTaskQueue
+import igneous
+from igneous.task_creation import *
 
 
 def make_info(num_channels, layer_type, dtype, shape, resolution,
@@ -12,7 +15,7 @@ def make_info(num_channels, layer_type, dtype, shape, resolution,
         num_channels, layer_type, dtype, 'raw', resolution, offset, shape,
         chunk_size=chunk_size)
 
-        
+
 def cutout(opt, dtype='uint8'):
     print(opt.gs_input)
 
@@ -48,3 +51,44 @@ def cutout(opt, dtype='uint8'):
     cutout = cutout.transpose([3,2,1,0])
     cutout = np.squeeze(cutout).astype(dtype)
     return cutout
+
+
+def to_tensor(data):
+    """Ensure that data is a numpy 4D array."""
+    assert isinstance(data, np.ndarray)
+    if data.ndim == 2:
+        data = data[np.newaxis,np.newaxis,...]
+    elif data.ndim == 3:
+        data = data[np.newaxis,...]
+    elif data.ndim == 4:
+        pass
+    else:
+        raise RuntimeError("data must be a numpy 4D array")
+    assert data.ndim == 4
+    return data
+
+
+def ingest(data, opt):
+    # Neuroglancer format
+    data = to_tensor(data)
+    data = data.transpose((3,2,1,0))
+    num_channels = data.shape[-1]
+    shape = data.shape[:-1]
+
+    # Offset
+    offset = opt.begin if opt.offset is None else opt.offset
+
+    # Create info
+    info = make_info(num_channels, opt.vol_type, str(data.dtype), shape,
+                     opt.resolution, offset=offset, chunk_size=opt.chunk_size)
+    print(info)
+    gs_path = opt.gs_output
+    print("gs_output:\n{}".format(gs_path))
+    cvol = cv.CloudVolume(gs_path, mip=0, info=info, parallel=opt.parallel)
+    cvol[:,:,:,:] = data
+    cvol.commit_info()
+
+    # Downsample
+    if opt.downsample:
+        with LocalTaskQueue(parallel=opt.parallel) as tq:
+            create_downsampling_tasks(tq, gs_path, mip=0, fill_missing=True)
