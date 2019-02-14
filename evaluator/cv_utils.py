@@ -88,7 +88,31 @@ def ingest(data, opt):
     cvol[:,:,:,:] = data
     cvol.commit_info()
 
+    # Optional downsampling & meshing
+    downsample(opt)
+    mesh(opt)
+
+
+def downsample(opt):
+    gs_path = opt.gs_output
+
     # Downsample
     if opt.downsample:
         with LocalTaskQueue(parallel=opt.parallel) as tq:
             create_downsampling_tasks(tq, gs_path, mip=0, fill_missing=True)
+
+
+def mesh(opt):
+    gs_path = opt.gs_output
+
+    # Mesh
+    if opt.mesh:
+        assert opt.vol_type == 'segmentation'
+
+        # Create mesh
+        with LocalTaskQueue(parallel=opt.parallel) as tq:
+            create_meshing_tasks(tq, gs_path, mip=opt.mesh_mip)
+
+        # Manifest
+        with MockTaskQueue() as tq:
+            create_mesh_manifest_tasks(tq, gs_path)
