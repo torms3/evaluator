@@ -3,8 +3,6 @@ from __future__ import print_function
 from collections import OrderedDict
 import numpy as np
 
-import segascorus as sc
-
 from .metric.voi import voi
 from .metric.rand import adapted_rand
 
@@ -62,7 +60,6 @@ class LineSearch(object):
             print("Threshold = {:.3f}".format(t))
             seg1 = self.seg1(threshold=t)
             seg2 = self.seg2(threshold=t)
-            # self.results[t] = sc.score(seg1, seg2)
             if metric == "voi":
                 split, merge = voi(seg1, seg2)
                 error = merge + split
@@ -134,7 +131,6 @@ class LineSearchZ(object):
             print("Threshold = {:.3f}".format(t))
             seg1 = self.seg1(threshold=(t,xy_thresh,xy_thresh))
             seg2 = self.seg2(threshold=(t,xy_thresh,xy_thresh))
-            # self.results[t] = sc.score(seg1, seg2)
             if metric == "voi":
                 split, merge = voi(seg1, seg2)
                 error = merge + split
