@@ -122,14 +122,18 @@ def vi_tables(x, y=None, ignore_x=[0], ignore_y=[0]):
     nzpxy = pxy[nzx, :][:, nzy]
 
     # Calculate log conditional probabilities and entropies
+    # Merge error
     lpygx = np.zeros(np.shape(px))
     lpygx[nzx] = xlogx(divide_rows(nzpxy, nzpx)).sum(axis=1).ravel()
                         # \sum_x{p_{y|x} \log{p_{y|x}}}
     hygx = -(px*lpygx) # \sum_x{p_x H(Y|X=x)} = H(Y|X)
 
+    # Split error
     lpxgy = np.zeros(np.shape(py))
     lpxgy[nzy] = xlogx(divide_columns(nzpxy, nzpy)).sum(axis=0).ravel()
     hxgy = -(py*lpxgy)
+
+    # TODO: Resolve edge cases
 
     return [pxy] + list(map(np.asarray, [px, py, hxgy, hygx, lpygx, lpxgy]))
 

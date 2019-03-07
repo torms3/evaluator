@@ -3,4 +3,4 @@ from .cv_utils import cutout, ingest
 from .search import LineSearch, LineSearchZ
 from .segment import *
 from .metric.rand import adapted_rand
-from .metric.voi import voi
+from .metric.voi import *
