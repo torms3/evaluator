@@ -4,9 +4,8 @@ import numpy as np
 
 import cloudvolume as cv
 from cloudvolume.lib import Vec, Bbox
-from taskqueue import LocalTaskQueue
-import igneous
-from igneous.task_creation import *
+from taskqueue import LocalTaskQueue, MockTaskQueue
+import igneous.task_creation as tc
 
 
 def make_info(num_channels, layer_type, dtype, shape, resolution,
@@ -99,7 +98,9 @@ def downsample(opt):
     # Downsample
     if opt.downsample:
         with LocalTaskQueue(parallel=opt.parallel) as tq:
-            create_downsampling_tasks(tq, gs_path, mip=0, fill_missing=True)
+            tasks = tc.create_downsampling_tasks(gs_path,
+                                                 mip=0, fill_missing=True)
+            tq.insert_all(tasks)
 
 
 def mesh(opt):
@@ -111,8 +112,10 @@ def mesh(opt):
 
         # Create mesh
         with LocalTaskQueue(parallel=opt.parallel) as tq:
-            create_meshing_tasks(tq, gs_path, mip=opt.mesh_mip)
+            tasks = tc.create_meshing_tasks(gs_path, mip=opt.mesh_mip)
+            tq.insert_all(tasks)
 
         # Manifest
         with MockTaskQueue() as tq:
-            create_mesh_manifest_tasks(tq, gs_path)
+            tasks = create_mesh_manifest_tasks(gs_path)
+            tq.insert_all(tasks)
