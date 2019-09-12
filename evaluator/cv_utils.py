@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import numpy as np
 
 import cloudvolume as cv
@@ -10,9 +8,16 @@ import igneous.task_creation as tc
 
 def make_info(num_channels, layer_type, dtype, shape, resolution,
               offset=(0,0,0), chunk_size=(64,64,64)):
-    return cv.CloudVolume.create_new_info(
-        num_channels, layer_type, dtype, 'raw', resolution, offset, shape,
-        chunk_size=chunk_size)
+    info = cv.CloudVolume.create_new_info(
+                num_channels=num_channels,
+                layer_type=layer_type,
+                data_type=dtype,
+                encoding='raw',
+                resolution=resolution,
+                voxel_offset=offset,
+                volume_size=shape,
+                chunk_size=chunk_size)
+    return info
 
 
 def cutout(opt, dtype='uint8'):
@@ -117,5 +122,5 @@ def mesh(opt):
 
         # Manifest
         with MockTaskQueue() as tq:
-            tasks = create_mesh_manifest_tasks(gs_path)
+            tasks = tc.create_mesh_manifest_tasks(gs_path)
             tq.insert_all(tasks)
