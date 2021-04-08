@@ -20,12 +20,13 @@ def make_info(num_channels, layer_type, dtype, shape, resolution,
     return info
 
 
-def cutout(opt, dtype='uint8'):
+def cutout(opt, dtype='uint8', progress=True):
     print(opt.gs_input)
 
     # CloudVolume.
     cvol = cv.CloudVolume(opt.gs_input, mip=opt.in_mip, cache=opt.cache,
-                          fill_missing=True, parallel=opt.parallel)
+                          fill_missing=True, parallel=opt.parallel,
+                          progress=progress)
 
     # Cutout
     offset0 = cvol.mip_voxel_offset(0)
@@ -72,7 +73,7 @@ def to_tensor(data):
     return data
 
 
-def ingest(data, opt):
+def ingest(data, opt, progress=True):
     # Neuroglancer format
     data = to_tensor(data)
     data = data.transpose((3,2,1,0))
@@ -88,7 +89,8 @@ def ingest(data, opt):
     print(info)
     gs_path = opt.gs_output
     print("gs_output:\n{}".format(gs_path))
-    cvol = cv.CloudVolume(gs_path, mip=0, info=info, parallel=opt.parallel)
+    cvol = cv.CloudVolume(gs_path, mip=0, info=info, parallel=opt.parallel,
+                          progress=progress)
     cvol[:,:,:,:] = data
     cvol.commit_info()
 
